@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Цифровой навигатор — обучение для пенсионеров</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Верхняя панель с настройками и входом -->
+        <div class="top-bar">
+            <div class="logo">📱 Цифровой навигатор</div>
+            <div class="settings-panel">
+                <button class="icon-btn" id="settingsBtn">⚙️ Настройки</button>
+                <button class="icon-btn" id="helpBtn">❓ Помощь</button>
+                <button class="icon-btn" id="loginBtn">👤 Войти</button>
+            </div>
+        </div>
+
+        <!-- Приветствие пользователя (после входа) -->
+        <div id="userGreeting" class="user-greeting" style="display: none;">
+            Здравствуйте, <span id="userName">Иван Иванович</span>!
+            <button class="secondary-btn small" id="profileBtn">📋 Мой профиль</button>
+            <button class="secondary-btn small" id="logoutBtn">🚪 Выйти</button>
+        </div>
+
+        <!-- Блок настроек -->
+        <div class="settings-popup" id="settingsPopup">
+            <div class="settings-title">Настройки</div>
+            <div class="settings-row">
+                <span class="settings-label">🔊 Озвучка:</span>
+                <div class="toggle-group">
+                    <button class="toggle-option active" id="soundOn">Вкл</button>
+                    <button class="toggle-option" id="soundOff">Выкл</button>
+                </div>
+            </div>
+            <div class="settings-row">
+                <span class="settings-label">🌞 Тема:</span>
+                <div class="toggle-group">
+                    <button class="toggle-option active" id="themeLight">Светлая</button>
+                    <button class="toggle-option" id="themeDark">Тёмная</button>
+                </div>
+            </div>
+            <div class="settings-row">
+                <span class="settings-label">🔠 Размер шрифта:</span>
+                <div class="toggle-group">
+                    <button class="toggle-option active" id="fontNormal">Обычный</button>
+                    <button class="toggle-option" id="fontLarge">Крупный</button>
+                </div>
+            </div>
+            <button class="secondary-btn" id="closeSettings">Закрыть настройки</button>
+        </div>
+
+        <!-- Модальное окно входа -->
+        <div class="modal" id="loginModal" style="display: none;">
+            <div class="modal-content">
+                <span class="close-modal" id="closeModal">&times;</span>
+                <h2>Вход / Регистрация</h2>
+                <p>Введите номер телефона, мы пришлём код (демо)</p>
+                <input type="tel" id="phoneInput" placeholder="+7 (___) ___-__-__" value="+7 999 123-45-67">
+                <button class="primary-btn" id="sendCodeBtn">Отправить код</button>
+                <div id="codeSection" style="display: none;">
+                    <p>Введите код из SMS (в демо используйте <strong>1111</strong>)</p>
+                    <input type="text" id="codeInput" placeholder="Код">
+                    <button class="primary-btn" id="verifyCodeBtn">Подтвердить</button>
+                </div>
+                <p id="loginMessage" style="color: green;"></p>
+            </div>
+        </div>
+
+        <!-- Личный кабинет -->
+        <div id="profilePage" style="display: none;">
+            <div class="breadcrumbs">
+                <span class="breadcrumb-link" id="backToMainFromProfile">🏠 Главная</span> ›
+                <span>Личный кабинет</span>
+            </div>
+            <div class="profile-header">
+                <h2>Личный кабинет</h2>
+                <p><strong>Телефон:</strong> <span id="profilePhone"></span></p>
+                <p><strong>Имя:</strong> <span id="profileName"></span></p>
+            </div>
+            <h3>Мой прогресс</h3>
+            <div id="progressList" class="progress-list"></div>
+            <h3>Мои справки (демо)</h3>
+            <div id="certificatesList" class="certificates-list"></div>
+        </div>
+
+        <!-- ГЛАВНОЕ МЕНЮ -->
+        <div id="mainMenu">
+            <h1 class="main-title">📚 Оглавление курса</h1>
+            <p class="main-subtitle">Нажмите на нужный раздел:</p>
+            <div class="section-grid" id="sectionsContainer"></div>
+        </div>
+
+        <!-- СПИСОК УРОКОВ РАЗДЕЛА -->
+        <div id="lessonsList" style="display: none;">
+            <div class="breadcrumbs">
+                <span class="breadcrumb-link" id="backToMainFromLessons">🏠 Главная</span> ›
+                <span class="breadcrumb-link" id="currentSectionName">Раздел</span> ›
+                <span>Список уроков</span>
+            </div>
+            <div class="section-header" id="sectionHeader">
+                <h2 class="section-header-title" id="sectionTitle">Раздел</h2>
+            </div>
+            <div class="lessons-grid" id="lessonsContainer"></div>
+        </div>
+
+        <!-- СТРАНИЦА УРОКА -->
+        <div id="lessonPage" style="display: none;">
+            <div class="breadcrumbs">
+                <span class="breadcrumb-link" id="backToLessonsFromLesson">🏠 Главная</span> ›
+                <span class="breadcrumb-link" id="currentSectionNameBread">Раздел</span> ›
+                <span class="breadcrumb-link" id="currentLessonNameBread">Урок</span>
+            </div>
+            <div class="lesson-header">
+                <h1 class="lesson-title" id="lessonTitle">Заголовок урока</h1>
+                <div class="lesson-goal" id="lessonGoal">Цель урока</div>
+            </div>
+            <div id="stepsContainer"></div>
+            <div class="action-buttons">
+                <button class="primary-btn" id="simulatorBtn">🎮 Открыть тренажёр</button>
+                <button class="secondary-btn" id="speakBtn">🔊 Озвучить урок</button>
+            </div>
+            <!-- Нижняя навигация -->
+            <div class="bottom-nav">
+                <button class="nav-link" id="prevLessonBtn">← Предыдущий урок</button>
+                <button class="nav-link" id="homeBtn">🏠 Главная</button>
+                <button class="nav-link" id="nextLessonBtn">Следующий урок →</button>
+            </div>
+        </div>
+
+        <!-- Интерактивный тренажёр (вынесен отдельно, фиксирован снизу) -->
+        <div class="simulator" id="simulatorBlock" style="display: none;">
+            <div class="simulator-screen">
+                <div class="simulator-title">⚡ ТРЕНАЖЁР</div>
+                <div class="feedback" id="simFeedback">👆 Выполняйте задания</div>
+                <div id="simulatorContent"></div>
+                <button class="sim-button small" id="closeSimulatorBtn">🔙 Закрыть тренажёр</button>
+            </div>
+        </div>
+
+        <!-- Модальное окно для сообщений (демо-режим) -->
+        <div id="messageModal" class="message-modal" style="display: none;">
+            <div class="message-modal-content">
+                <span class="close-message-modal">&times;</span>
+                <p id="messageText">Это окно пока не работает</p>
+                <button class="secondary-btn" id="closeMessageBtn">Понятно</button>
+            </div>
+        </div>
+
+        <!-- Lightbox для увеличения картинки -->
+        <div id="lightbox" class="lightbox" style="display: none;">
+            <span class="lightbox-close">&times;</span>
+            <img class="lightbox-content" id="lightboxImg">
+        </div>
+
+        <!-- Футер -->
+        <footer>
+            <p>© Цифровой навигатор — просто о сложном. Все уроки бесплатны.</p>
+        </footer>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
