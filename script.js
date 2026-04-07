@@ -335,11 +335,11 @@ const courseData = {
                     steps: [
                         {
                             image: '4_1_1.jpg',
-                            caption: 'Найдите на телефоне значок RuStore или Play Market (Android) или App Store (iPhone) и нажмите на него.'
+                            caption: 'Найдите на телефоне значок RuStore, Play Market (Android) или App Store (iPhone) и нажмите на него.'
                         },
                         {
                             image: '4_1_2.jpg',
-                            caption: 'В строке поиска введите название нужного приложения, например, «Max».'
+                            caption: 'В строке поиска введите название нужного приложения, например, «WhatsApp».'
                         },
                         {
                             image: '4_1_3.jpg',
@@ -502,7 +502,7 @@ const courseData = {
                     steps: [
                         {
                             image: '5_6_1.jpg',
-                            caption: 'Скачайте и установите Max или ВКонтакте (как в уроке 4.1).'
+                            caption: 'Скачайте и установите Max или ВКонтакте(как в уроке 4.1).'
                         },
                         {
                             image: '5_6_2.jpg',
@@ -554,7 +554,7 @@ const courseData = {
                 {
                     id: 8,
                     name: 'Досуг в интернете (RUTUBE, онлайн-кинотеатры)',
-                    description: 'RUTUBE, кино',
+                    description: 'YouTube, кино',
                     goal: 'Смотреть видео',
                     simulator: null,
                     steps: [
@@ -765,7 +765,6 @@ const courseData = {
                         }
                     ]
                 }
-                
             ]
         },
 
