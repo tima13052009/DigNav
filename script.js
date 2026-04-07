@@ -329,17 +329,17 @@ const courseData = {
                 {
                     id: 1,
                     name: 'Магазин приложений: как устанавливать программы',
-                    description: 'Play Market, App Store',
+                    description: 'RuStore, Play Market',
                     goal: 'Находить и устанавливать приложения',
                     simulator: null,
                     steps: [
                         {
                             image: '4_1_1.jpg',
-                            caption: 'Найдите на телефоне значок Play Market (Android) или App Store (iPhone) и нажмите на него.'
+                            caption: 'Найдите на телефоне значок RuStore или Play Market (Android) или App Store (iPhone) и нажмите на него.'
                         },
                         {
                             image: '4_1_2.jpg',
-                            caption: 'В строке поиска введите название нужного приложения, например, «WhatsApp».'
+                            caption: 'В строке поиска введите название нужного приложения, например, «Max».'
                         },
                         {
                             image: '4_1_3.jpg',
@@ -362,7 +362,7 @@ const courseData = {
         {
             id: 5,
             name: 'Интернет',
-            description: 'Браузер, почта, YouTube, мессенджеры',
+            description: 'Браузер, почта, RUTUBE, мессенджеры',
             lessons: [
                 {
                     id: 1,
@@ -495,14 +495,14 @@ const courseData = {
                 },
                 {
                     id: 6,
-                    name: 'Мессенджеры (WhatsApp, Telegram)',
+                    name: 'Мессенджеры (Max, ВКонтакте)',
                     description: 'Общение в чатах',
                     goal: 'Общаться в чатах',
                     simulator: null,
                     steps: [
                         {
                             image: '5_6_1.jpg',
-                            caption: 'Скачайте и установите WhatsApp или Telegram (как в уроке 4.1).'
+                            caption: 'Скачайте и установите Max или ВКонтакте (как в уроке 4.1).'
                         },
                         {
                             image: '5_6_2.jpg',
@@ -553,14 +553,14 @@ const courseData = {
                 },
                 {
                     id: 8,
-                    name: 'Досуг в интернете (YouTube, онлайн-кинотеатры)',
-                    description: 'YouTube, кино',
+                    name: 'Досуг в интернете (RUTUBE, онлайн-кинотеатры)',
+                    description: 'RUTUBE, кино',
                     goal: 'Смотреть видео',
                     simulator: null,
                     steps: [
                         {
                             image: '5_8_1.jpg',
-                            caption: 'Откройте приложение YouTube или зайдите на сайт youtube.com.'
+                            caption: 'Откройте приложение RUTUBE или зайдите на сайт rutube.ru.'
                         },
                         {
                             image: '5_8_2.jpg',
@@ -764,36 +764,8 @@ const courseData = {
                             caption: 'Выберите курс и нажмите «Записаться».'
                         }
                     ]
-                },
-                {
-                    id: 2,
-                    name: 'Финансовая грамотность (пример прохождения курса)',
-                    description: 'Курс Центра финансов',
-                    goal: 'Пройти обучение',
-                    simulator: null,
-                    steps: [
-                        {
-                            image: '8_2_1.jpg',
-                            caption: 'Зайдите на сайт course.nefg.ru (курс Центра финансовой грамотности).'
-                        },
-                        {
-                            image: '8_2_2.jpg',
-                            caption: 'Зарегистрируйтесь, указав имя и email.'
-                        },
-                        {
-                            image: '8_2_3.jpg',
-                            caption: 'Выберите курс «Основы финансовой грамотности».'
-                        },
-                        {
-                            image: '8_2_4.jpg',
-                            caption: 'Изучите материалы (текст, видео).'
-                        },
-                        {
-                            image: '8_2_5.jpg',
-                            caption: 'Пройдите итоговый тест. После успешной сдачи можно скачать сертификат.'
-                        }
-                    ]
                 }
+                
             ]
         },
 
