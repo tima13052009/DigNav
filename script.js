@@ -554,7 +554,7 @@ const courseData = {
                 {
                     id: 8,
                     name: 'Досуг в интернете (RUTUBE, онлайн-кинотеатры)',
-                    description: 'YouTube, кино',
+                    description: 'RUTUBE, кино',
                     goal: 'Смотреть видео',
                     simulator: null,
                     steps: [
