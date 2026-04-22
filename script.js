@@ -166,6 +166,20 @@ const courseData = {
                             caption: 'Дайте папке название или оставьте как есть.'
                         }
                     ]
+                },
+                {
+                    id: 6,
+                    name: 'Будильник: как установить и настроить',
+                    description: 'Учимся ставить будильник на телефоне',
+                    goal: 'Научиться устанавливать будильник и управлять им',
+                    simulator: 'alarm-simulator',
+                    steps: [
+                        { image: 'alarm_1.jpg', caption: 'Откройте приложение «Часы» на телефоне.' },
+                        { image: 'alarm_2.jpg', caption: 'Нажмите на вкладку «Будильник» (внизу экрана).' },
+                        { image: 'alarm_3.jpg', caption: 'Нажмите на значок «+», чтобы добавить новый будильник.' },
+                        { image: 'alarm_4.jpg', caption: 'Выберите время, прокручивая колёсики часов и минут.' },
+                        { image: 'alarm_5.jpg', caption: 'Нажмите «Сохранить» или «Готово». Будильник установлен!' }
+                    ]
                 }
             ]
         },
@@ -181,7 +195,7 @@ const courseData = {
                     name: 'Текстовый редактор и блокнот',
                     description: 'Создание заметок',
                     goal: 'Научиться писать и сохранять заметки',
-                    simulator: null,
+                    simulator: 'notes-simulator',
                     steps: [
                         {
                             image: '3_1_1.jpg',
@@ -554,7 +568,7 @@ const courseData = {
                 {
                     id: 8,
                     name: 'Досуг в интернете (RUTUBE, онлайн-кинотеатры)',
-                    description: 'RUTUBE, кино',
+                    description: 'YouTube, кино',
                     goal: 'Смотреть видео',
                     simulator: null,
                     steps: [
@@ -1236,7 +1250,76 @@ function loadSimulator(type) {
                 });
             }, 100);
         });
-    } else {
+    }
+    else if (type === 'notes-simulator') {
+        // Локальное хранилище заметок для тренажёра
+        let notes = [];
+    
+        simContent.innerHTML = `
+            <div class="simulator-content-form notes-simulator">
+                <h3>📝 Блокнот (тренажёр)</h3>
+                <p style="font-size: 1rem; margin-bottom: 1rem;">Напишите что-нибудь и нажмите «Сохранить».</p>
+                <textarea id="noteText" rows="3" placeholder="Введите текст заметки..." style="width: 100%; padding: 0.8rem; font-size: 1.2rem; border-radius: 15px; border: 2px solid #ccc;"></textarea>
+                <button class="primary-btn" id="addNoteBtn" style="margin-top: 1rem;">➕ Сохранить заметку</button>
+                <div id="notesList" style="margin-top: 2rem;">
+                    <h4>📋 Мои заметки:</h4>
+                    <div id="notesContainer" style="background: #f0f0f0; border-radius: 15px; padding: 1rem; min-height: 100px;">
+                        <p style="color: gray;">Пока нет заметок. Напишите первую!</p>
+                    </div>
+                </div>
+            </div>
+        `;
+    
+        const noteTextarea = document.getElementById('noteText');
+        const addBtn = document.getElementById('addNoteBtn');
+        const notesContainer = document.getElementById('notesContainer');
+    
+        function renderNotes() {
+            if (notes.length === 0) {
+                notesContainer.innerHTML = '<p style="color: gray;">Пока нет заметок. Напишите первую!</p>';
+                return;
+            }
+            notesContainer.innerHTML = notes.map((note, idx) => `
+                <div style="background: white; border-radius: 12px; padding: 0.8rem; margin-bottom: 0.8rem; display: flex; justify-content: space-between; align-items: center;">
+                    <span style="word-break: break-word; flex: 1;">${escapeHtml(note)}</span>
+                    <button class="delete-note" data-index="${idx}" style="background: #c44536; color: white; border: none; border-radius: 30px; padding: 0.4rem 1rem; margin-left: 1rem; cursor: pointer;">❌ Удалить</button>
+                </div>
+            `).join('');
+            
+            // Навесить обработчики на кнопки удаления
+            document.querySelectorAll('.delete-note').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const idx = parseInt(btn.dataset.index);
+                    notes.splice(idx, 1);
+                    renderNotes();
+                    simFeedback.textContent = '🗑 Заметка удалена.';
+                });
+            });
+        }
+    
+        addBtn.addEventListener('click', () => {
+            const text = noteTextarea.value.trim();
+            if (text === '') {
+                simFeedback.textContent = '❌ Напишите что-нибудь в поле перед сохранением!';
+                return;
+            }
+            notes.push(text);
+            noteTextarea.value = '';
+            renderNotes();
+            simFeedback.textContent = '✅ Заметка сохранена! Отлично.';
+        });
+    
+        // Простая защита от XSS (если пользователь введёт HTML)
+        function escapeHtml(str) {
+            return str.replace(/[&<>]/g, function(m) {
+                if (m === '&') return '&amp;';
+                if (m === '<') return '&lt;';
+                if (m === '>') return '&gt;';
+                return m;
+            });
+        }
+    }
+    else {
         simContent.innerHTML = '<p>Для этого урока тренажёр в разработке.</p>';
     }
 }
