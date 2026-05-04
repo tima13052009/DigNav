@@ -593,6 +593,20 @@ const courseData = {
                             caption: 'Чтобы вернуться к списку видео, нажмите кнопку «Назад».'
                         }
                     ]
+                },
+                {
+                    id: 9,
+                    name: 'Яндекс Доставка: как заказать еду',
+                    description: 'Заказываем еду с доставкой на дом',
+                    goal: 'Научиться выбирать ресторан, блюда и оформлять заказ',
+                    simulator: 'food-delivery-simulator',
+                    steps: [
+                        { image: 'food_1.jpg', caption: 'Откройте приложение «Яндекс Доставка» или сайт eda.yandex.ru.' },
+                        { image: 'food_2.jpg', caption: 'Введите адрес доставки (улица, дом, квартира).' },
+                        { image: 'food_3.jpg', caption: 'Выберите ресторан и блюда, которые хотите заказать.' },
+                        { image: 'food_4.jpg', caption: 'Нажмите «В корзину», затем перейдите в корзину и нажмите «Оформить заказ».' },
+                        { image: 'food_5.jpg', caption: 'Выберите способ оплаты (карта или наличные) и нажмите «Подтвердить заказ».' }
+                    ]
                 }
             ]
         },
@@ -855,6 +869,11 @@ const courseData = {
 let currentUser = null;
 let currentSection = null;
 let currentLesson = null;
+let offcanvasSidebar = null;
+let sidebarOverlay = null;
+let sidebarToggleBtn = null;
+let offcanvasCloseBtn = null;
+let offcanvasLessonsList = null;
 
 // Кеширование DOM-элементов
 const DOM = {
@@ -886,6 +905,11 @@ document.addEventListener('DOMContentLoaded', function() {
     DOM.messageText = document.getElementById('messageText');
     DOM.lightbox = document.getElementById('lightbox');
     DOM.lightboxImg = document.getElementById('lightboxImg');
+    offcanvasSidebar = document.getElementById('offcanvasSidebar');
+    sidebarOverlay = document.getElementById('sidebarOverlay');
+    sidebarToggleBtn = document.getElementById('sidebarToggleBtn');
+    offcanvasCloseBtn = document.getElementById('offcanvasCloseBtn');
+    offcanvasLessonsList = document.getElementById('offcanvasLessonsList');
     
     loadUser();
     renderMainMenu();
@@ -1047,11 +1071,74 @@ function setupEventListeners() {
     window.addEventListener('click', (e) => {
         if (e.target === DOM.lightbox) closeLightbox();
     });
+    // Кнопка открытия меню
+    if (sidebarToggleBtn) {
+        sidebarToggleBtn.addEventListener('click', openSidebar);
+    }
+
+    // Кнопка закрытия в меню
+    if (offcanvasCloseBtn) {
+        offcanvasCloseBtn.addEventListener('click', closeSidebar);
+    }
+
+    // Клик по оверлею (затемнению) — закрываем меню
+    if (sidebarOverlay) {
+        sidebarOverlay.addEventListener('click', closeSidebar);
+    }
 }
 
 function toggleActive(activeId, inactiveId) {
     document.getElementById(activeId).classList.add('active');
     document.getElementById(inactiveId).classList.remove('active');
+}
+
+// ========== УПРАВЛЕНИЕ ВЫДВИЖНЫМ МЕНЮ ==========
+function openSidebar() {
+    if (offcanvasSidebar) {
+        offcanvasSidebar.classList.add('open');
+        if (sidebarOverlay) sidebarOverlay.classList.add('active');
+        document.body.style.overflow = 'hidden'; // запрещаем прокрутку страницы
+        // Обновляем список уроков при открытии
+        renderOffcanvasLessons();
+    }
+}
+
+function closeSidebar() {
+    if (offcanvasSidebar) {
+        offcanvasSidebar.classList.remove('open');
+        if (sidebarOverlay) sidebarOverlay.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+}
+
+// ========== ОТОБРАЖЕНИЕ УРОКОВ В МЕНЮ ==========
+function renderOffcanvasLessons() {
+    if (!offcanvasLessonsList || !currentSection) return;
+    
+    offcanvasLessonsList.innerHTML = '';
+    
+    currentSection.lessons.forEach(lesson => {
+        const item = document.createElement('div');
+        item.className = 'offcanvas-lesson-item';
+        if (currentLesson && currentLesson.id === lesson.id) {
+            item.classList.add('active');
+        }
+        if (currentUser && currentUser.progress && currentUser.progress.includes(lesson.id)) {
+            item.classList.add('completed');
+        }
+        
+        // Показываем номер урока и название
+        item.innerHTML = `<span style="font-weight: 600;">${lesson.id}.</span> ${lesson.name}`;
+        
+        item.addEventListener('click', () => {
+            // Открываем урок
+            openLesson(currentSection.id, lesson.id);
+            // Закрываем меню после выбора урока
+            closeSidebar();
+        });
+        
+        offcanvasLessonsList.appendChild(item);
+    });
 }
 
 // ========== НАВИГАЦИЯ МЕЖДУ УРОКАМИ ==========
@@ -1088,7 +1175,8 @@ function openSection(sectionId) {
     const section = courseData.sections.find(s => s.id == sectionId);
     if (!section) return;
     currentSection = section;
-    
+    renderOffcanvasLessons();
+
     document.getElementById('currentSectionName').textContent = section.name;
     document.getElementById('sectionTitle').textContent = section.name;
 
@@ -1116,6 +1204,9 @@ function openSection(sectionId) {
     DOM.mainMenu.style.display = 'none';
     DOM.lessonsList.style.display = 'block';
     DOM.profilePage.style.display = 'none';
+    if (document.activeElement) {
+        document.activeElement.blur();
+    }
 }
 
 // ========== ОТКРЫТИЕ УРОКА ==========
@@ -1124,6 +1215,8 @@ function openLesson(sectionId, lessonId) {
     const lesson = section.lessons.find(l => l.id == lessonId);
     if (!lesson) return;
     currentLesson = lesson;
+
+    renderOffcanvasLessons();
 
     document.getElementById('currentSectionNameBread').textContent = section.name;
     document.getElementById('currentLessonNameBread').textContent = lesson.name;
@@ -1167,9 +1260,11 @@ function openLesson(sectionId, lessonId) {
     DOM.lessonsList.style.display = 'none';
     DOM.lessonPage.style.display = 'block';
     
+
     // Прокрутка страницы вверх после открытия урока
     window.scrollTo({ top: 0, behavior: 'smooth' });
 }
+
 
 // ========== ТРЕНАЖЁР ==========
 function openSimulator() {
@@ -1197,42 +1292,58 @@ function loadSimulator(type) {
     
     if (type === 'gosuslugi-certificate') {
         simContent.innerHTML = `
-            <div class="simulator-content-form">
-                <h3>Заказ справки (тренажёр)</h3>
-                <label>Ваше ФИО:</label>
-                <input type="text" id="fioInput" value="${currentUser ? currentUser.name : 'Иванов Иван Иванович'}">
-
-                <label>Год:</label>
-                <select id="yearSelect">
-                    <option>2024</option>
-                    <option>2023</option>
-                    <option>2022</option>
-                </select>
-
-                <button class="primary-btn" id="orderCertificateBtn">ЗАКАЗАТЬ СПРАВКУ</button>
-
-                <div id="certificateResult" style="display: none;" class="certificate-result"></div>
+            <div style="background: #005CBE; padding: 2rem; border-radius: 20px; width: 100%;">
+                <div style="background: white; border-radius: 16px; padding: 2rem; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                    <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
+                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23005CBE'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15h-2v-2h2v2zm0-4h-2V7h2v6z'/%3E%3C/svg%3E" 
+                             style="width: 32px; height: 32px;">
+                        <h3 style="color: #005CBE; margin: 0; font-size: 1.8rem;">Госуслуги</h3>
+                    </div>
+                    <h3 style="color: #1e3a5f; margin-bottom: 1rem;">Заказ справки (тренажёр)</h3>
+                    <p style="color: #555; margin-bottom: 1.5rem;">Все данные ненастоящие, только для обучения</p>
+                    
+                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: #333;">Ваше ФИО:</label>
+                    <input type="text" id="fioInput" value="${currentUser ? currentUser.name : 'Иванов Иван Иванович'}" 
+                           style="width: 100%; padding: 1rem; font-size: 1.2rem; border-radius: 8px; border: 1px solid #ccc; margin-bottom: 1.5rem;">
+    
+                    <label style="display: block; margin-bottom: 0.5rem; font-weight: 600; color: #333;">Год:</label>
+                    <select id="yearSelect" style="width: 100%; padding: 1rem; font-size: 1.2rem; border-radius: 8px; border: 1px solid #ccc; margin-bottom: 1.5rem;">
+                        <option>2024</option>
+                        <option>2023</option>
+                        <option>2022</option>
+                    </select>
+    
+                    <button id="orderCertificateBtn" style="background: #005CBE; color: white; font-weight: 700; border: none; border-radius: 8px; padding: 1rem; font-size: 1.2rem; cursor: pointer; width: 100%; transition: 0.1s;">
+                        ЗАКАЗАТЬ СПРАВКУ
+                    </button>
+    
+                    <div id="certificateResult" style="display: none; margin-top: 1.5rem; background: #e8f5e9; padding: 1.5rem; border-radius: 12px; border: 1px solid #4caf50;">
+                        <h4 style="color: #2e7d32; font-size: 1.5rem; margin-bottom: 0.5rem;">✓ СПРАВКА ГОТОВА</h4>
+                        <p><strong>ФИО:</strong> <span id="resultFio"></span></p>
+                        <p><strong>Период:</strong> <span id="resultYear"></span> год</p>
+                        <p><strong>Доход:</strong> 156 780 руб. (демо)</p>
+                        <p><strong>Номер справки:</strong> <span id="resultNumber"></span></p>
+                        <button id="downloadDemoPdf" style="background: #f0f0f0; border: none; border-radius: 8px; padding: 0.8rem 1.5rem; margin-top: 1rem; cursor: pointer;">📥 Скачать (демо)</button>
+                    </div>
+                </div>
             </div>
         `;
-
-        document.getElementById('orderCertificateBtn').addEventListener('click', function() {
+    
+        const orderBtn = document.getElementById('orderCertificateBtn');
+        orderBtn.addEventListener('click', function() {
             const fio = document.getElementById('fioInput').value;
             const year = document.getElementById('yearSelect').value;
             const certNumber = 'ГС-2026-' + Math.floor(Math.random() * 10000).toString().padStart(4, '0');
-
+    
+            document.getElementById('resultFio').textContent = fio;
+            document.getElementById('resultYear').textContent = year;
+            document.getElementById('resultNumber').textContent = certNumber;
+            
             const resultDiv = document.getElementById('certificateResult');
-            resultDiv.innerHTML = `
-                <h4>✓ СПРАВКА ГОТОВА</h4>
-                <p><strong>ФИО:</strong> ${fio}</p>
-                <p><strong>Период:</strong> ${year} год</p>
-                <p><strong>Доход:</strong> 156 780 руб. (демо)</p>
-                <p><strong>Номер справки:</strong> ${certNumber}</p>
-                <button class="secondary-btn" id="downloadDemoPdf">📥 Скачать (демо)</button>
-            `;
             resultDiv.style.display = 'block';
-
+    
             simFeedback.textContent = '✅ Отлично! Справка сформирована.';
-
+    
             if (currentUser && currentLesson) {
                 if (!currentUser.progress) currentUser.progress = [];
                 if (!currentUser.progress.includes(currentLesson.id)) {
@@ -1243,11 +1354,14 @@ function loadSimulator(type) {
                 currentUser.certificates.push({ name: 'Справка о доходах', date: new Date().toLocaleDateString(), number: certNumber });
                 saveUser();
             }
-
+    
             setTimeout(() => {
-                document.getElementById('downloadDemoPdf')?.addEventListener('click', () => {
-                    showMessage('Демо-скачивание: файл справки сохранён.');
-                });
+                const downloadBtn = document.getElementById('downloadDemoPdf');
+                if (downloadBtn) {
+                    downloadBtn.addEventListener('click', () => {
+                        showMessage('Демо-скачивание: файл справки сохранён.');
+                    });
+                }
             }, 100);
         });
     }
