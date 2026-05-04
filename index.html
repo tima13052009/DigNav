@@ -6,6 +6,7 @@
     <title>Цифровой навигатор — обучение для пенсионеров</title>
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
     <div class="container">
         <!-- Верхняя панель с настройками и входом -->
@@ -15,6 +16,7 @@
                 <button class="icon-btn" id="settingsBtn">⚙️ Настройки</button>
                 <button class="icon-btn" id="helpBtn">❓ Помощь</button>
                 <button class="icon-btn" id="loginBtn">👤 Войти</button>
+                <button class="icon-btn" id="sidebarToggleBtn">📋 Список уроков</button>
             </div>
         </div>
 
@@ -154,7 +156,19 @@
             <span class="lightbox-close">&times;</span>
             <img class="lightbox-content" id="lightboxImg">
         </div>
+        <!-- Выдвижное боковое меню -->
+        <div class="offcanvas-sidebar" id="offcanvasSidebar">
+            <div class="offcanvas-header">
+                <div class="offcanvas-title">📚 Уроки раздела</div>
+                <button class="offcanvas-close-btn" id="offcanvasCloseBtn">✕</button>
+            </div>
+            <div class="offcanvas-lessons-list" id="offcanvasLessonsList">
+                <!-- Список уроков будет заполняться динамически -->
+            </div>
+        </div>
 
+        <!-- Затемняющий фон (оверлей) -->
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
         <!-- Футер -->
         <footer>
             <p>© Цифровой навигатор — просто о сложном. Все уроки бесплатны.</p>
